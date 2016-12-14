@@ -1,5 +1,5 @@
 
-//Code Prufer  O(N) solution.
+//1026. Questions and Answers
 
 #include <cstdio>
 
