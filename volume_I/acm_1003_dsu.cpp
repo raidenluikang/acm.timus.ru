@@ -73,8 +73,10 @@ DSU dsu;
  
 int solve()
 {
+	typedef std::map<unsigned, unsigned> map_type;
+	typedef map_type::const_iterator citerator;
 	unsigned n, len, l, r;
-	std::map<int, int> id; 
+	map_type id; 
 	//1. read whole file
 	n = fread(buffer, 1, sizeof(buffer)-1, stdin);
 	buffer[n]  = '\0';
@@ -125,7 +127,7 @@ int solve()
 			
 			unsigned u = l-1, v = r;
 			
-			auto u_it = id.find(u);
+			citerator u_it = id.find(u);
 			if(u_it == id.end())
 			{
 				//++cont;
@@ -139,7 +141,7 @@ int solve()
 			}
 			
 			
-			auto v_it = id.find(v);		
+			citerator v_it = id.find(v);		
 			if(v_it == id.end())
 			{
 				//++cont;
