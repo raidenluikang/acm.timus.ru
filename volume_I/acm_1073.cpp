@@ -27,36 +27,31 @@ int solve(int n)
 	// n <= 60 000  --> m = sqrt(n) == sqrt(6)*100 = 250
 	// find primes < 250
 	bool primes[256] = {};
-	for(int i = 2; i < 16; i ++)
+	for(int i = 3; i < 16; i += 2)
 	{
 		if (!primes[i])
-		  for(int j = i * i; j < 256; j += i)
+		  for(int j = i * i; j < 256; j += i+i)
 		    primes[j] = true;
 	}
 	 
-	bool ev = true;
-	for(int i = 2; i < 256; i ++)
+	
+	while( !( n & 1 ) ) 
+	    n >>= 1;
+	
+	for(int i = 3; i < 256; i += 6)
 	{
-		if (! primes[ i ] )
+		if (!primes[i])
 		{
-			if ((i&3) == 3)
-			{
-				//if (n % i == 0) printf("4k+3: %d\n",i);
-				int d = 0;
-				while(n % i == 0){++d; n/=i;}
-				ev =  ev && !( d & 1 );
-			}
-			else
-			{
-				//if(n % i == 0) printf("4k+1: %d\n",i);
-				while(n % i == 0) n/= i;
-			}
+			int d = 0;
+			while(n % i == 0){++d; n/=i;}
+			
+			if(d & 1) return 3;
 		}
 	}
 	
-	if ( ( n & 3 ) == 3) ev = false;
+	if ((n&3) == 3) return 3;
+	else return 2;
 	
-	return (ev) ? 2 : 3;
 }
 int main(int argc, char **argv)
 {
@@ -71,3 +66,4 @@ int main(int argc, char **argv)
     
 	return 0;
 }
+
