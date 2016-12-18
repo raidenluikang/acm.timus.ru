@@ -33,10 +33,6 @@ int main(int argc, char **argv)
 		for(int j = 1; j<= n; ++j)
 		{
 			table[i][j] = *o++;
-			if (table[i][j] != '.' && table[i][j] != '#')
-			{
-				fprintf(stderr, "ERROR table[%d][%d] = %c\n",i,j,table[i][j]);
-			}
 		}
 	}
 	
