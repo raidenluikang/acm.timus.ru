@@ -43,98 +43,21 @@ struct solver
 		unsigned w = 0, v = 0;
 
 		uint32_t const* o = (uint32_t const * ) in; // in 128 bit aligned
-		uint32_t * p = (uint32_t  *)out;  // out 128 bit aligned
-
-		for (unsigned i = 0, n4 = n >> 2; i != n4; ++i)
+		
+		for (unsigned i = 0; i != n; ++i)
 		{
-
-#define O_TO_P(x,sh)  ( ((x & 0xFF) + ((x>>16) & 0xFF) - 48) << sh )
-
-			p[i] = O_TO_P(o[0], 0) | O_TO_P(o[1], 8) | O_TO_P(o[2], 16) | O_TO_P(o[3], 24);
-
-			o += 4;
-			
-			//if all 4 digits are 9 skip this
-			if (   p[ i ]  == 0x39393939 )
-			{
-				continue;
-			}
-			
-			// if p[i] last digit  > 57 ('9')  , 57 = 0x39
-			if ( ( p[i] & 0xFF000000) > 0x39000000)
-			{
-				//p[i] -= 0x0A000000;
-				//p[i] += 0x00010000;
-				//   0x 0A 00 00 00 
-				// -
-				//   0x 00 01 00 00
-				// -------------------
-				//   0x 09 FF 00 00
-			
-				p[i] -= 0x09FF0000;
-			}
-
-			// if p[i] -3-rd digit > 57 ('9')
-			if ((p[i] & 0x00FF0000) > 0x00390000)
-			{
-				// p[i] -= 0x 00 0A 00 00
-				// p[i] += 0x 00 00 01 00
-				// ----------------------
-				// p[i] -= (0x 00 0A 00 00 - 0x 00 00 01 00)
-				//   0x 00 0A 00 00
-				// - 
-				//   0x 00 00 01 00
-				// -----------------
-				//   0x 00 09 FF 00
-				p[i] -= 0x0009FF00;
-			}
-
-			// if p[i] - 2-nd digit > 57 ('9')
-			if ((p[i] & 0x0000FF00) > 0x00003900)
-			{
-				p[i] -= 0x000009FF;
-
-			}
-
-
-			//if p[i] -1-st digit > 57 ('9')
-			if ((p[i] & 0xFF) > 0x39)
-			{
-				p[i] -= 0x0A;
-
-				
-				while ( v > 0 && out[v] == 0x39)--v;
-				
-				out[ v ]++;
-				if (++v != (i << 2))
-					memset(out + v, '0', (i << 2) - v);
-			}
-			v = ( i << 2 ) | 3;
-		}
-
-		while (v > 0 && out[v] == 0x39)--v;
-
-		for (unsigned i = n & ~3; i != n; ++i)
-		{
-			out[i] = ((o[0] & 0xFF) + ((o[0] >> 16) & 0xFF)) - 48;
+			out[i] = (o[0] & 0xFF) + ((o[0] >> 16) & 0xFF) - 48;
 			++o;
-			if (out[i] > 0x39)
-			{
-				out[i] -= 0x0A;
-			
-				out[v]++;
-				if (++v != i)
-					memset(out + v, '0', i - v);
-				v = i;
-			}
-			else if (out[i] < 0x39)
-			{
+			if (out[i] < 57) { v = i; }
+			else if (out[i] > 57){
+				out[i] -= 10; 
+				out[v++]++; 
+				memset(out + v, '0', i - v);
 				v = i;
 			}
 		}
-
-		out[n] = '\n';
-		fwrite(out, 1, n+1, stdout);
+	
+		fwrite(out, 1, n, stdout);
 		return 0;
 	}
 };
