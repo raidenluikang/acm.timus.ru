@@ -14,7 +14,7 @@
 
 struct word
 {
-    char s[ 16 ]; // s[0] = length of word :)
+    char s[ 16 ]; // s[8] = length of word :)
 };
 
 word dict[ 100 ];
