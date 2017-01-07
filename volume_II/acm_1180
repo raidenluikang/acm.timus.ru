@@ -1,0 +1,34 @@
+// acm.timus.ru 1180.  
+
+
+#include <cstdio>
+
+
+char in[512];
+char const* o;
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif
+    
+    o = in;
+    in[fread(in,1,sizeof(in)-4,stdin)] = 0;
+    
+    int s = 0;
+    while(*o && *o <= 32)++o;
+    while(*o >='0' && *o <= '9')
+        s += *o++ - '0';
+    
+    s = s%3;
+    switch(s)
+    {
+        case 0: puts("2");break;
+        case 1: puts("1\n1");break;
+        case 2: puts("1\n2");break;
+    }
+    
+    
+    return 0;
+}
