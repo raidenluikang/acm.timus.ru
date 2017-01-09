@@ -338,11 +338,8 @@ int main()
     w = out;
     for(int i= 1; i<=n;++i)
     {
-        *w++ = '"';
          print_bigint(ans[i]);
-         w[-1] = '"'; // last '\n' replace to quote symbol.
-         *w++ = ',';
-         *w++ = '\n';
+    
     }
  
     fwrite(out, 1, w - out, stdout);
