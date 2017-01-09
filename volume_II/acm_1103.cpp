@@ -10,7 +10,7 @@
  * the answer.
  *
  * Performance:
- * O(n), runs the test suite in 0.031s using 548KB memory.
+ * O(n), runs the test suite in 0.001s using 448KB memory.
  */
 
 #include <cstdio>
