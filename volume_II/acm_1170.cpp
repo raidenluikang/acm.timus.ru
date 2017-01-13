@@ -5,22 +5,22 @@
 #include <cmath>
 
 void judge_assert(bool b){ if (!b)printf("%d\n",1/b);}
-const char* o;
-char in[65536];
 
-unsigned readInt()
+const char* o;
+char in[65536*2];
+
+int readInt()
 {
-    unsigned u = 0;
+    int u = 0;
     while(*o && *o <= 32)++o;
-//    judge_assert(*o>='0' && *o<='9');
     while(* o >='0' && *o<='9') u = (u << 3) + (u << 1) + (*o++ - '0');
-    
-  //  judge_assert(u > 0);
     return u;
 }
 struct pt
 {
     double x,y;
+    pt():x(),y(){}
+    pt(double x, double y):x(x),y(y){}
 };
 bool operator < (pt const& a, pt const& b){ return a.x < b.x || (a.x == b.x && a.y < b.y); }
 pt operator - (pt const& a, pt const& b)
@@ -33,8 +33,10 @@ pt operator - (pt const& a, pt const& b)
 
 double dist(pt p)
 {
-    double x2 = fabs(p.x * p.x);
-    double y2 = fabs(p.y * p.y);
+    using std::sqrt;
+    
+    double x2 =  (p.x * p.x);
+    double y2 =  (p.y * p.y);
     
     return sqrt(x2 + y2);
 }
@@ -49,10 +51,10 @@ struct rect
 bool operator < (rect const& l, rect const& r){ return l.a < r.a; }
 
 
-unsigned n;
-double  lazy_0, L;
+int n;
+double  lazy_0, len;
 rect  r[512];
-pt target;
+pt p_ans;
 double ans;
 bool ans_changed;
 
@@ -61,7 +63,7 @@ static const double EPS = 1.0E-12;
 void solve(pt p)
 {
     pt qa, qb;
-    double tt = 0, l_0 = L;
+    double tt = 0, l_0 = len;
     double coef = p.x / p.y;
     double coef_inv = p.y / p.x; 
     
@@ -94,9 +96,9 @@ void solve(pt p)
         
         if (qa. x < qb. x )
         {
-            double D =  dist(qa - qb);
-            tt  += D * r[ i ]. lazy;
-            l_0 -= D;
+            double dp =  dist(qa - qb);
+            tt  += dp * r[ i ]. lazy;
+            l_0 -= dp;
         }
     }
 
@@ -105,7 +107,7 @@ void solve(pt p)
     if (tt < ans )
     {
         ans = tt;
-        target = p;
+        p_ans = p;
         
         ans_changed = true;
     }
@@ -124,7 +126,7 @@ int main()
     in[fread(in,1,sizeof(in)-4,stdin)] = 0;
     
     n = readInt();
-    for(unsigned i = 0; i != n; ++i)
+    for(int i = 0; i != n; ++i)
     {
         r[i].a.x = readInt();
         r[i].a.y = readInt();
@@ -136,17 +138,17 @@ int main()
     }
     
     lazy_0 = readInt();
-    L = readInt();
+    len = readInt();
     
-    target .x = L;
-    target .y = 0;
-    ans = L * lazy_0;
+    p_ans .x = 0;
+    p_ans .y = len;
+    ans = len * lazy_0;
     ans_changed = false;
-    for(unsigned i = 0; i != n; ++i)
+    for(int i = 0; i != n; ++i)
     {
         pt p;
-        solve(r[i].a);
-        solve(r[i].b);
+        solve( r[i].a );
+        solve( r[i].b );
         
         p.x = r[i].a.x;
         p.y = r[i].b.y;
@@ -162,12 +164,19 @@ int main()
     {
         if (ans_changed)
         {
-            double D = dist( target );
-            target.x *= L / D;
-            target.y *= L / D;
+            double dp = dist( p_ans );
+            p_ans.x *= len / dp;
+            p_ans.y *= len / dp;
+        }
+        else 
+        {
+            // x = 1   y   1+y^2 = L^2 --> 
+            
+            p_ans.x = 0.003;
+            p_ans.y = sqrt(len * len - p_ans.x * p_ans.x);
         }
         
-        printf("%.6f\n%.6f %.6f\n",ans,target.x, target.y);
+        printf("%.6f\n%.6f %.6f\n",ans,p_ans.x, p_ans.y);
     }
 }
  
