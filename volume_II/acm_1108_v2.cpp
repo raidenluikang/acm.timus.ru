@@ -26,7 +26,7 @@ void judge_assert(bool b)
 {
     if ( ! b )
     {
-        printf("%d\n",b);
+        printf("%d\n",1/b); // division by zero.
     }
 }
 
