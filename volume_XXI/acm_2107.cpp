@@ -12,7 +12,6 @@ int lastdiv, firstdiv;
 
 bool candiv  [ MAXN ][ MAXN ] ;
 int  G[MAXN][MAXN];
-//long long maskdiv [ MAXN ] ;
 
 bool visited[MAXN];
 
