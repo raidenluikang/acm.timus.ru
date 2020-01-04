@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <climits>
 #include <limits>
+#include <queue>
 
 struct ttttttttt{};
 constexpr struct ttttttttt nowarn{};
@@ -21,7 +22,7 @@ int water[108][108];
 int rabbit[108][108];
 int min_jump[108][108];
 
-pii queue[108*108*64];
+std::queue< pii > queue;
 
 void solve()
 {
@@ -38,19 +39,17 @@ void solve()
 	
 	
 	water[row_water][col_water] = 1;
-	int tq, hq;
-	tq = 0;
-	hq = 0;
-	queue[tq++] = pii(row_water, col_water);
+	queue.push(pii(row_water, col_water));
 	
 	constexpr pii RS[] = { {1,0}, {0,1}, {-1,0}, {0,-1}};
 		
-	while(hq < tq)
+	while( ! queue.empty() )
 	{
-		const pii coordinate = queue[hq++];
+		const pii coordinate = queue.front();
 		
 		const int row = coordinate.first;
 		const int col = coordinate.second;
+		queue.pop();
 			  
 		for(const pii p : RS)
 		{
@@ -64,7 +63,7 @@ void solve()
 			   )
 			{
 				water[new_row][new_col] = 1 + water[row][col];
-				queue[tq++] = pii(new_row, new_col);
+				queue.push(  pii(new_row, new_col) );
 			}
 		}
 	}
@@ -85,19 +84,20 @@ void solve()
 		return;
 	}
 	
-	hq = 0;
-	tq = 0;
-	queue[tq++] = pii(row_rabbit, col_rabbit);
+	
+	queue.push( pii(row_rabbit, col_rabbit) );
 	
 	rabbit[row_rabbit][col_rabbit] = 1;
 	min_jump[row_rabbit][col_rabbit] = 0;
 	
-	while(hq < tq)
+	while(!queue.empty())
 	{
-		const pii coordinate = queue[hq++];
+		const pii coordinate = queue.front();
 		
 		const int row = coordinate.first;
 		const int col = coordinate.second;
+		
+		queue.pop();
 		
 		for (const pii p : RS)
 		{
@@ -120,7 +120,7 @@ void solve()
 					rabbit[new_row][new_col] = 1 + rabbit[row][col];
 					min_jump[new_row][new_col] = new_jump;
 					
-					queue[tq++] = pii(new_row, new_col);
+					queue.push( pii(new_row, new_col) );
 				}
 			}
 		}
